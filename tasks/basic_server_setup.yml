@@ -1,5 +1,5 @@
 ---
-- name: "basic ubuntu server setup"
+- name: "basic debian based server setup"
   include_role:
     name: rickapichairuk.basic-server-setup
   vars:
@@ -11,7 +11,7 @@
       - libpq-dev
 - name: "setup firewall"
   include_role:
-    name: ansible-ufw
+    name: rickapichairuk.ansible-ufw
   vars:
     ufw_allowed_ports:
       - "22"
