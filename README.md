@@ -70,6 +70,52 @@ DEPENDENCIES
 * [rickapichairuk.deploy-rails-env-vars](https://github.com/rickapichairuk/ansible-deploy-rails-env-vars)
 * [rickapichairuk.ufw](https://github.com/rickapichairuk/ansible-ufw)
 
+Here is what my requirements.yml looks like:
+
+```
+- src: https://github.com/jdauphant/ansible-role-nginx.git
+  path: roles/
+- src: https://github.com/zzet/ansible-rbenv-role.git
+  path: roles/
+  name: zzet.ansible-rbenv-role
+- src: https://github.com/zenoamaro/ansible-postgresql
+  path: roles/
+  name: postgresql
+- src: https://github.com/DavidWittman/ansible-redis.git
+  path: roles/
+  name: DavidWittman.redis
+- src: https://github.com/saucelabs-ansible/awscli.git
+  path: roles/
+  name: awscli
+- src: saucelabs-ansible.pip
+  path: roles/
+  version: v2.0.0
+- src: https://github.com/debops/ansible-fail2ban.git
+  path: roles/
+  name: ansible-fail2ban
+- src: https://github.com/geerlingguy/ansible-role-ntp.git
+  path: roles/
+  name: ansible-role-ntp
+- src: https://github.com/mtpereira/ansible-passenger
+  path: roles/
+  name: ansible-passenger
+- src: rickapichairuk.ufw
+  path: roles/
+  name: rickapichairuk.ufw
+- src: rickapichairuk.basic-server-setup
+  path: roles/
+  name: rickapichairuk.basic-server-setup
+- src: rickapichairuk.add-admin-user
+  path: roles/
+  name: rickapichairuk.add-admin-user
+- src: rickapichairuk.deploy-rails-env-vars
+  path: roles/
+  name: rickapichairuk.deploy-rails-env-vars
+- src: rickapichairuk.rails-app-server-role
+  path: roles/
+  name: rickapichairuk.rails-app-server-role
+```
+
 ROLE VARIABLES
 --------------
 
