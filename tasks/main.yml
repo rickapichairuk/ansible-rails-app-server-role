@@ -1,0 +1,23 @@
+# 1. install python on ubuntu 16.04
+# 2. install basic packages
+# 3. setup firewall
+# 4. add devops admin user account
+- include: basic_server_setup.yml
+
+# 5. create deployer user account
+- include: deployer.yml
+
+# 6. install ntp
+# 7. install nginx
+- include: ntp_nginx.yml
+
+# 8. install rbenv
+# 9. install bundler
+- include: rbenv.yml
+
+# 10. install postgresql
+- include: postgresql.yml
+
+# 11. make shared directory for capistrano
+# 12. deploy rails config files into shared directory
+- include: deploy_rails_config.yml

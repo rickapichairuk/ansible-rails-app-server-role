@@ -1,0 +1,25 @@
+---
+galaxy_info:
+  author: Rick Apichairuk
+  description: Ansible Role to do basic setup of an ubuntu server
+  license: BSD
+  min_ansible_version: 2.2
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+  - name: Debian
+    versions:
+    - all
+  galaxy_tags:
+    - ruby on rails
+    - ruby
+    - rails
+    - capistrano
+    - nginx
+    - ubuntu
+    - postgresql
+dependencies:
+  - rickapichairuk.basic-server-setup
+  - rickapichairuk.add-admin-user
+  - rickapichairuk.deploy-rails-env-vars

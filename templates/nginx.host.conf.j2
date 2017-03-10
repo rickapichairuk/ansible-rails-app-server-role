@@ -1,0 +1,34 @@
+upstream puma {
+  server unix:{{app_shared_dir}}/tmp/sockets/puma.sock fail_timeout=0;
+}
+
+server {
+  listen 80 default deferred;
+  root {{app_root_dir}}/current/public;
+
+  try_files $uri/maintenance.html $uri/index.html $uri @puma;
+
+  location /basic_status {
+    stub_status on;
+    access_log off;
+    allow 127.0.0.1;
+    deny all;
+  }
+
+  location @puma {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+    proxy_pass http://puma;
+  }
+
+  location = /favicon.ico {
+    expires    max;
+    add_header Cache-Control public;
+  }
+
+  error_page 500 502 503 504 /500.html;
+  error_page 404 /404.html;
+  client_max_body_size 4G;
+  keepalive_timeout 10;
+}

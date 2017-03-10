@@ -1,0 +1,22 @@
+---
+- name: "basic ubuntu server setup"
+  include_role:
+    name: rickapichairuk.basic-server-setup
+  vars:
+    additional_packages_to_install:
+      - nodejs
+      - redis-server
+      - redis-tools
+      - imagemagick
+      - libpq-dev
+- name: "setup firewall"
+  include_role:
+    name: ansible-ufw
+  vars:
+    ufw_allowed_ports:
+      - "22"
+      - "80"
+      - "443"
+- name: "add devops user"
+  include_role:
+    name: rickapichairuk.add-admin-user

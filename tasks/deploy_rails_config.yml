@@ -1,0 +1,34 @@
+---
+- name: "deploy new rails configuration"
+  include_role:
+    name: rickapichairuk.deploy-rails-env-vars
+  vars:
+    deploy_rails_config_dir: "{{app_shared_dir}}/config"
+    etc_environment:
+      deploy: false
+      template: /local/path/to/your/etc/environment.j2
+      dest: /etc/environment
+    secrets_yml:
+      deploy: true
+      template: "{{template_dir}}/secrets.yml.j2"
+      dest: "{{app_shared_dir}}/config/secrets.yml"
+    application_yml:
+      deploy: true
+      template: "{{template_dir}}/application.yml.j2"
+      dest: "{{app_shared_dir}}/config/application.yml"
+    dot_rbenv_vars:
+      deploy: true
+      template: "{{template_dir}}/dot.rbenv-vars.j2"
+      dest: "{{app_shared_dir}}/dot.rbenv-vars"
+      create_symlink: true
+      symlink_dest: "{{deployer.home_dir}}/.rbenv-vars"
+      symlink_owner: "{{deployer.username}}"
+      symlink_group: "{{deployer.username}}"
+    database_yml:
+      deploy: true
+      template: "{{template_dir}}/database.yml.j2"
+      dest: "{{app_shared_dir}}/config/database.yml"
+    newrelic_yml:
+      deploy: true
+      template: "{{template_dir}}/newrelic.yml.j2"
+      dest: "{{app_shared_dir}}/config/newrelic.yml"

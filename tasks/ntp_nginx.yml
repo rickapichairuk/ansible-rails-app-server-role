@@ -1,0 +1,12 @@
+---
+- name: "install and setup ntp"
+  include_role:
+    name: ansible-role-ntp
+    vars:
+      ntp_enabled: true
+- name: "install nginx"
+  include_role:
+    name: ansible-role-nginx
+    vars:
+      nginx_remove_sites:
+        - default

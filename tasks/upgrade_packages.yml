@@ -1,0 +1,5 @@
+---
+- name:   Update APT package cache
+  action: apt update_cache=yes
+- name: Upgrade all packages
+  apt: upgrade=safe
