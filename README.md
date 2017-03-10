@@ -127,12 +127,45 @@ rbenv_gems:
 # rbenv section end
 database:
   name: '{{app_name}}'
-  password: 6Q7N8rA4hpb4xh
+  password: SuperSecretPassword
   username: admin
   host: localhost
+#
+# Configuration for rails configuration files. The following assumes that you
+# put templates in the templates directory which resides in the same directory
+# as the playbook as specified by playbook_dir special ansible variable.
+#
+# The deploy_rails_config_dir var is expected to be the directory where the 
+# shared/linked config files used by capistrano reside on the server.
+#
 deploy_rails_env_vars:
   etc_environment:
     deploy: false
+    dest: /etc/environment
+  secrets_yml:
+    deploy: true
+    template: "{{playbook_dir}}/templates/secrets.yml.j2"
+    dest: "{{deploy_rails_config_dir}}/secrets.yml"
+  database_yml:
+    deploy: true
+    template: "{{playbook_dir}}/templates/secrets.yml.j2"
+    dest: "{{deploy_rails_config_dir}}/database.yml"
+  application_yml:
+    deploy: true
+    template: "{{playbook_dir}}/templates/application.yml.j2"
+    dest: "{{deploy_rails_config_dir}}/application.yml"
+  dot_rbenv_vars:
+    deploy: true
+    template: "{{playbook_dir}}/templates/dot.rbenv-vars.j2"
+    dest: "{{deploy_rails_config_dir}}/dot.rbenv-vars"
+    symlink_dest: "{{deployer.home_dir}}/.rbenv-vars"
+    symlink_owner: "{{deployer.username}}"
+    symlink_group: "{{deployer.username}}"
+    create_symlink: true
+  newrelic_yml:
+    deploy: true
+    template: "{{playbook_dir}}/templates/newrelic.yml.j2"
+    dest: "{{deploy_rails_config_dir}}/newrelic.yml"
 admin:
   email: rick@next.unicorn
   password: SuperSecretPassword123
