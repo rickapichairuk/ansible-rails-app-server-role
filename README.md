@@ -4,6 +4,47 @@ ansible-rails-app-server-role
 A role to configure a debian based server to serve as a rails application
 server.
 
+WHAT DOES THIS ROLE DO EXACTLY?
+-------------------------------
+
+This role is comprised of many other roles (see DEPENDENCIES section). It setups
+a debian based server to be a rails application server. It does this by doing
+the following:
+
+* basic debian based server setup
+  * run [rickapichairuk.basic-server-setup](https://github.com/rickapichairuk/ansible-basic-server-setup) role
+    * update apt
+    * install essential packages
+    * install other packages required by rails
+      * nodejs
+      * redis-server
+      * redis-tools
+      * imagemagick
+      * libpq-dev
+    * setup firewall using [rickapichairuk.ufw](https://github.com/rickapichairuk/ansible-ufw)
+      * close all ports
+      * open port 22
+      * open port 80
+      * open port 443
+    * setup admin user account for devops user(s) using [rickapichairuk.add-admin-user](https://github.com/rickapichairuk/ansible-add-admin-user)
+  * setup a user account for deploymment
+    * setup ssh private and public keys
+    * add specified ssh public keys to authorized_keys for deployment user
+      * this can include circleci's ssh pub key for capistrano deployments
+    * give sudo rights for restarting sidekiq and puma
+  * install and setup ntp and nginx
+    * run role [ansible-role-ntp](https://github.com/geerlingguy/ansible-role-ntp)
+    * run role [ansible-role-nginx](https://github.com/jdauphant/ansible-role-nginx)
+      * remove default site config
+  * install postgresql
+    * install python-psycopg2
+    * create database
+    * create db user
+  * deploy shared rails configuration files to server
+    * interpolate templates and put config files on server in shared directory
+      where capistrano symlinks the files into each code deployment
+
+
 INSTALLATION
 ------------
 
@@ -27,6 +68,7 @@ DEPENDENCIES
 * [rickapichairuk.basic-server-setup](https://github.com/rickapichairuk/ansible-basic-server-setup)
 * [rickapichairuk.add-admin-user](https://github.com/rickapichairuk/ansible-add-admin-user)
 * [rickapichairuk.deploy-rails-env-vars](https://github.com/rickapichairuk/ansible-deploy-rails-env-vars)
+* [rickapichairuk.ufw](https://github.com/rickapichairuk/ansible-ufw)
 
 ROLE VARIABLES
 --------------
@@ -198,6 +240,53 @@ EXAMPLE PLAYBOOK
   roles:
     - rails_server_setup
 ```
+
+INTENDED USAGE
+--------------
+
+You can create a devops directory under the root directory of your rails app
+and create set of ansible playbooks there like so:
+
+```
+$ cd /path/to/your/rails/app/root/dir
+$ cd devops
+$ tree
+
+├── README.md
+├── hosts
+│   └── production
+│       ├── group_vars
+│       │   └── rails
+│       └── hosts
+├── playbooks
+│   ├── rails_server_setup.yml
+│   ├── roles
+│   └── templates
+│       ├── application.yml.j2
+│       ├── database.yml.j2
+│       ├── dot.rbenv-vars.j2
+│       ├── newrelic.yml.j2
+│       └── secrets.yml.j2
+└── requirements.yml
+
+```
+
+PLANNED FUTURE IMPROVEMENTS
+---------------------------
+
+I will eventually either replace puma with phusion passenger OR allow users to
+select one or the other via ansible variables.
+
+I will add tags to allow users to select specific tasks to run. Example would be
+to allow users to only deploy rails configuration files. This would be useful
+when you change some rails related env var and want to push the new
+configuration up to the server.
+
+HOW TO CONTRIBUTE
+-----------------
+
+Please feel free to fork and submit pull requests. Or feel free to fork and
+change it to your liking.
 
 AUTHOR
 ------
