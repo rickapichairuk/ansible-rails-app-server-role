@@ -19,8 +19,3 @@ galaxy_info:
     - nginx
     - ubuntu
     - postgresql
-dependencies:
-  - rickapichairuk.basic-server-setup
-  - rickapichairuk.add-admin-user
-  - rickapichairuk.deploy-rails-env-vars
-  - rickapichairuk.ufw
