@@ -36,6 +36,9 @@ the following:
     * run role [ansible-role-ntp](https://github.com/geerlingguy/ansible-role-ntp)
     * run role [ansible-role-nginx](https://github.com/jdauphant/ansible-role-nginx)
       * remove default site config
+  * configure nginx
+    * setup correct mime types
+    * setup a vhost for your app with config options for [modern apps](https://certsimple.com/blog/nginx-http2-load-balancing-config).
   * install postgresql
     * install python-psycopg2
     * create database
@@ -158,6 +161,13 @@ circleci:
   ssh_public_key: |
     ssh-rsa THIS_IS_CIRCLE_CI_SSH_PUBLIC_KEYAAACAQCeplq5gS15LBE9Pwzeq4AqcUumVDxoMH1D6ZWBHAYZvRc/lbGFqcgFKlMVKR+X7mRI/dDVZ+u0HqQZsiUMWoiYCL1BKmvtGT7qknwf8tyw+AFRB8Mvx6/t7xSz4OJZdjbsIlJqd9/v8V/0cyELYUT+ynIPnO+nyVdU0R955xaCQqntOgZ3Q42N3tj9cYQM33ez0CkDn+TOTdujINJRunVrXEToCAFqmo7WHq0dpVd0QzuJD0DTz0lwWC6H6CljUwOqb9wt55fNbLNxG1HaIe9M1F3nMU3fwGS4We+76+fNv2CC67PeM8IW47RZosfRCuZJ6y1b9VKBvz3jPbFQfR4i0aPlsxIne6xVNp00MDU/4XK1l0D9vpWMdzxb/x0bFAJnS6rmWBDoWR5DQQXIqgr7KrBiyiRuV8hOzm7t6NdIFIlQWxMqwtBnV/XsVu86Lx6mVJgUmWcZgG02lPTDRbiLlSwrtTXaCd2+IBYD7e7S2/CHDE9eqmE9WNKxPgk2RIQ5miCEq+4g0QoFl6w== somedude@somecompany.com
 
+basic_server_setup:
+  additional_packages_to_install:
+    - this_list_of_packages
+    - will_be_joined_with
+    - default_list_of_packages
+    - in_the_following_role
+    - rickapichairuk.basic-server-setup
 #
 # This is the user account for which you want to deploy the rails app as. This
 # should be different from the admin account. Also configuration options for
