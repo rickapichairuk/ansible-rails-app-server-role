@@ -3,12 +3,14 @@
   include_role:
     name: rickapichairuk.basic-server-setup
   vars:
-    additional_packages_to_install:
+    default_additional_packages_to_install:
       - nodejs
       - redis-server
       - redis-tools
       - imagemagick
       - libpq-dev
+    additional_packages_to_install:
+      {{ default_additional_packages_to_install + basic_server_setup.additional_packages_to_install }}
 - name: "setup firewall"
   include_role:
     name: rickapichairuk.ansible-ufw
