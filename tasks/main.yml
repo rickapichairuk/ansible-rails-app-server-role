@@ -11,6 +11,9 @@
 # 7. install nginx
 - include: ntp_nginx.yml
 
+# 8. configure nginx
+- include: nginx_config.yml
+
 # 8. install rbenv
 # 9. install bundler
 - include: rbenv.yml
