@@ -19,5 +19,6 @@
   postgresql_user: db={{database.name}}
                   name={{database.username}}
                   password={{database.password}}
+                  role_attr_flags=CREATEDB,SUPERUSER
   become: true
   become_user: postgres
