@@ -1,141 +1,80 @@
-# Default Ubuntu nginx config
-user www-data;
-# set one worker per CPU core
-worker_processes auto;
-pid /run/nginx.pid;
-
-events {
-  worker_connections 768;
+upstream puma {
+  server unix:{{app_shared_dir}}/tmp/sockets/puma.sock fail_timeout=0;
 }
 
-http {
-  sendfile on;
-  tcp_nopush on;
-  tcp_nodelay on;
-  keepalive_timeout 65;
-  types_hash_max_size 2048;
+server {
+  listen 81;
 
-  include mime.types;
-  default_type application/octet-stream;
-
-  log_format main '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"';
-  access_log /var/log/nginx/access.log;
-  error_log /var/log/nginx/error.log;
-
-  gzip on;
-
-  # End default Ubuntu nginx config
-
-  # Fix nginx sending its version number in error pages and Server header
-  server_tokens off;
-  # No iframes
-  add_header X-Frame-Options SAMEORIGIN;
-  # We'll supply correct content types, don't let browsers guess
-  add_header X-Content-Type-Options nosniff;
-
-  upstream puma {
-    # See https://cloud.digitalocean.com/droplets for these IPs
-    # Use IP addresses: see recommendation at https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/
-    # server 10.132.29.223:8000; # example-a
-    # server 10.132.55.149:8000; # example-b
-    server unix:{{app_shared_dir}}/tmp/sockets/puma.sock fail_timeout=0;
+  location = api/v1/oauth/preflight {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+    proxy_pass http://puma/api/v1/oauth/preflight;
   }
 
-  # Redirect www HTTP clients to non-www HTTPS permanently
-  # See http://nginx.org/en/docs/http/converting_rewrite_rules.html
-  server {
-    listen 80;
-    listen [::]:80;
-    server_name www.example.com;
-    return 301 https://{{rails.default_host}}$request_uri;
+  rewrite ^ https://$server_name$request_uri? permanent;
+}
+
+server {
+  listen 80 default deferred;
+
+  if ($http_x_forwarded_proto = "http") {
+    return 301 https://example.com$request_uri;
   }
 
-  # Redirect www HTTPS clients to non-www HTTPS permanently
-  server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    server_name www.{{rails.default_host}}.com;
-    include conf.d/https.conf;
-    return 301 https://{{rails.default_host}}$request_uri;
+  add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+  root {{app_public_dir}};
+
+  try_files $uri/maintenance.html $uri/index.html $uri @puma;
+
+  location /basic_status {
+    stub_status on;
+    access_log off;
+    allow 127.0.0.1;
+    deny all;
   }
 
-  # Redirect non-HTTPs clients to non-www HTTPS permanently
-  server {
-    listen 80;
-    listen [::]:80;
-    server_name example.com;
-    return 301 https://{{rails.default_host}}$request_uri;
-    include conf.d/https.conf;
+  location @puma {
+    proxy_set_header X-Url-Scheme $scheme;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-For-Forwarded-Proto $https;
+    proxy_set_header Host $http_host;
+    proxy_redirect off;
+    proxy_pass http://puma;
   }
 
-  # Single HTTPS non-www point all browsers will talk to
-  server {
-    listen 443 ssl http2 default deferred;
-    listen [::]:443 ssl http2 default deferred;
-    server_name {{rails.default_host}};
-    # https://leandromoreira.com.br/2015/10/12/how-to-optimize-nginx-configuration-for-http2-tls-ssl/
-    # https://www.nginx.com/blog/http-strict-transport-security-hsts-and-nginx/
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-    include conf.d/https.conf;
+  location ~ ^/(assets)/  {
+    root {{app_public_dir}};
+    gzip_static on;
+    expires     max;
+    add_header  Cache-Control public;
 
-    root /home/deploy/apps/{{app_name}}/current/public;
-    try_files $uri/maintenance.html $uri/index.html $uri @app;
-
-    # If you have your blog, images, etc hosted on another server, modify the
-    # following to meet your specific needs.
-    # Tilde means case-sensitive RE match
-    # location ~ ^(/help|/sitemap.xml|/BingSiteAuth.xml|/about|/why-ev-ssl|/blog|/rosetta-stone|/videos/blog|/images/blog|/fonts/blog|/images/rosetta-stone|/css/blog|/js/blog|/css/rosetta-stone.css) {
-    #   proxy_pass http://localhost:8000;
-    #   include conf.d/proxy.conf;
-    # }
-
-    location @app {
-      proxy_set_header X-Url-Scheme $scheme;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-
-      # enable this if you forward HTTPS traffic to unicorn,
-      # this helps Rack set the proper URL scheme for doing redirects:
-      proxy_set_header X-Forwarded-For-Forwarded-Proto $https;
-
-      proxy_set_header Host $host;
-      proxy_redirect off;
-      proxy_pass http://puma; # See 'upstream' directive above
-      # proxy.conf must be included in this level (and not the parent) otherwise they won't be inherited due to other proxy options in html-sse.conf
-      # http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_set_header
-      include conf.d/proxy.conf;
-      include conf.d/html5-sse.conf;
+    if ($http_origin ~* (https?://{{rails.default_host}})$) {
+      set $cors "true";
     }
 
-    location ~ ^/(assets)/  {
-      root /home/deploy/apps/{{app_name}}/current/public;
-      gzip_static on;
-      expires     max;
-      add_header  Cache-Control public;
-
-      if ($http_origin ~* (https?://{{rails.default_host}})$) {
-        set $cors "true";
-      }
-
-      if ($cors) {
-        add_header  'Access-Control-Allow-Origin' '$http_origin';
-        add_header  Vary Origin;
-      }
+    if ($cors) {
+      add_header  'Access-Control-Allow-Origin' '$http_origin';
+      add_header  Vary Origin;
     }
+  }
 
   location = /favicon.ico {
     expires    max;
     add_header Cache-Control public;
   }
 
-
-    # From https://easyengine.io/tutorials/nginx/status-page/
-    location /nginx_status {
-      stub_status on;
-      access_log off;
-      allow 127.0.0.1;
-      deny all;
-    }
-
-    include conf.d/error-page.conf;
+  # From https://easyengine.io/tutorials/nginx/status-page/
+  location /nginx_status {
+    stub_status on;
+    access_log off;
+    allow 127.0.0.1;
+    deny all;
   }
+
+  error_page 500 502 503 504 /500.html;
+  error_page 404 /404.html;
+  client_max_body_size 4G;
+  keepalive_timeout 10;
 }

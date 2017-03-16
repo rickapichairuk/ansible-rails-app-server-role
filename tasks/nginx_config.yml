@@ -15,10 +15,22 @@
 - name: copy vhost
   template: src=nginx.host.conf.j2 dest=/etc/nginx/sites-available/{{app_name}}
 
+- name: copy nginx.conf
+  template: src=nginx.conf.j2
+            dest=/etc/nginx/nginx.conf
+
+- name: unlink default vhost
+  action: file path=/etc/nginx/sites-enabled/default
+               state=absent
+
+- name: unlink default.conf
+  action: file dest=/etc/nginx/sites-enabled/default.conf
+               state=absent
+
 - name: symlink vhost
   file: dest=/etc/nginx/sites-enabled/{{app_name}} src=/etc/nginx/sites-available/{{app_name}} state=link
 
-- name: "Create share/config"
+- name: Create share/config
   file: dest={{app_shared_dir}}/config state=directory owner={{deployer.username}} group={{deployer.username}}
 
 # restart nginx
