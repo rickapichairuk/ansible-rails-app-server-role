@@ -9,4 +9,5 @@
     name: ansible-role-nginx
     vars:
       nginx_remove_sites:
-        - default
+        - 'default'
+        - 'default.conf'
