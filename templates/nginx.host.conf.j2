@@ -12,7 +12,7 @@ server {
     proxy_pass http://puma/api/v1/oauth/preflight;
   }
 
-  rewrite ^ https://$server_name$request_uri? permanent;
+  rewrite ^ https://{{rails.default_host}}$request_uri? permanent;
 }
 
 server {
