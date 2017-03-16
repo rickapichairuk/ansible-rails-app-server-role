@@ -19,7 +19,7 @@ server {
   listen 80 default deferred;
 
   if ($http_x_forwarded_proto = "http") {
-    return 301 https://example.com$request_uri;
+    rewrite ^(.*)$ https://$server_name$1 permanent;
   }
 
   add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
