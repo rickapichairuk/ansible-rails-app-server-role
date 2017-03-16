@@ -13,7 +13,7 @@
       "{{ default_additional_packages_to_install + basic_server_setup.additional_packages_to_install }}"
 - name: "setup firewall"
   include_role:
-    name: rickapichairuk.ansible-ufw
+    name: rickapichairuk.ufw
   vars:
     ufw_allowed_ports:
       - "22"
