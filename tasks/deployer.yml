@@ -11,11 +11,19 @@
 - name: Remove deploy user from sudoers
   action: lineinfile dest=/etc/sudoers regexp="{{deployer.username}} ALL" line="{{deployer.username}} ALL=(ALL) NOPASSWD:ALL" state=absent
 
-- name: Copy private key for deploy user
-  template: src=id_rsa.j2 dest=~{{deployer.username}}/.ssh/id_rsa owner={{deployer.username}} group={{deployer.username}} mode=0400
+- name: Install ssh private key
+    copy: 
+      content: "{{deployer.ssh_private_key}}"
+      dest: "{{deployer.username}}/.ssh/id_rsa"
+      owner: "{{deployer.username}}"
+      mode: 0400
 
-- name: Copy public key for deploy user
-  template: src=id_rsa.pub.j2 dest=~{{deployer.username}}/.ssh/id_rsa.pub owner={{deployer.username}} group={{deployer.username}} mode=0400
+- name: Install ssh public key
+    copy: 
+      content: "{{deployer.ssh_public_key}}"
+      dest: "{{deployer.username}}/.ssh/id_rsa.pub"
+      owner: "{{deployer.username}}"
+      mode: 0400
 
 - name: Allow deploy to restart sidekiq workers
   action: lineinfile dest=/etc/sudoers regexp="{{deployer.username}} ALL" line="{{deployer.username}} ALL=(ALL) NOPASSWD:/sbin/initctl start sidekiq-workers, /sbin/initctl stop sidekiq-workers, /sbin/initctl status sidekiq-workers, /sbin/initctl restart sidekiq-workers, /sbin/initctl stop puma-manager, /sbin/initctl start puma-manager, /sbin/initctl restart puma-manager, /sbin/initctl status puma-manager, /sbin/initctl stop nginx, /sbin/initctl start nginx, /sbin/initctl restart nginx, /sbin/initctl status nginx" state=present
