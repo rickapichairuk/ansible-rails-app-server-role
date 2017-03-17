@@ -14,13 +14,16 @@
 # 8. configure nginx
 - include: nginx_config.yml
 
-# 8. install rbenv
-# 9. install bundler
+# 9. install systemd files for puma and sidekiq
+- include: puma_service.yml
+- include: sidekiq_service.yml
+
+# 10. install rbenv & install bundler gem
 - include: rbenv.yml
 
-# 10. install postgresql
+# 11. install postgresql
 - include: postgresql.yml
 
-# 11. make shared directory for capistrano
-# 12. deploy rails config files into shared directory
+# 12. make shared directory for capistrano
+# 13. deploy rails config files into shared directory
 - include: deploy_rails_config.yml
