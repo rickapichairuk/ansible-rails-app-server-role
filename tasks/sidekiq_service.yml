@@ -1,0 +1,2 @@
+- name: copy vhost
+  template: src=sidekiq.service.j2 dest=/lib/systemd/system/sidekiq.service owner=root group=root

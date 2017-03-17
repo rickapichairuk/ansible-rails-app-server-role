@@ -1,0 +1,36 @@
+[Unit]
+Description=Puma HTTP Server
+After=network.target
+
+# Uncomment for socket activation (see below)
+# Requires=puma.socket
+
+[Service]
+# Foreground process (do not use --daemon in ExecStart or config.rb)
+Type=simple
+
+# Preferably configure a non-privileged user
+User={{deployer.username}}
+
+# Specify the path to your puma application root
+WorkingDirectory={{app_current_dir}}
+
+# Helpful for debugging socket activation, etc.
+# Environment=PUMA_DEBUG=1
+
+# The command to start Puma
+# Here we are using a binstub generated via:
+# `bundle binstubs puma --path ./sbin`
+# in the WorkingDirectory (replace <WD> below)
+# You can alternatively use `bundle exec --keep-file-descriptors puma`
+# ExecStart=<WD>/sbin/puma -b tcp://0.0.0.0:9292 -b ssl://0.0.0.0:9293?key=key.pem&cert=cert.pem
+
+# Alternatively with a config file (in WorkingDirectory) and
+# comparable `bind` directives
+ExecStart={{deployer.home_dir}}/.rbenv/bin/rbenv exec bundle exec puma -C {{app_current_dir}}/config/puma.rb -b unix://{{app_shared_dir}}/tmp/sockets/puma.sock
+ExecStop={{deployer.home_dir}}/.rbenv/bin/rbenv exec bundle exec pumactl -S {{app_shared_dir}}/tmp/pids/puma.state stop
+TimeoutSec=15
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
