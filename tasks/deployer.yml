@@ -11,17 +11,20 @@
 - name: Remove deploy user from sudoers
   action: lineinfile dest=/etc/sudoers regexp="{{deployer.username}} ALL" line="{{deployer.username}} ALL=(ALL) NOPASSWD:ALL" state=absent
 
+- name: Make sure deployer user .ssh dir exists
+    file: path={{deployer.home_dir}}/.ssh state=directory
+
 - name: Install ssh private key
     copy: 
       content: "{{deployer.ssh_private_key}}"
-      dest: "{{deployer.username}}/.ssh/id_rsa"
+      dest: "{{deployer.home_dir}}/.ssh/id_rsa"
       owner: "{{deployer.username}}"
       mode: 0400
 
 - name: Install ssh public key
     copy: 
       content: "{{deployer.ssh_public_key}}"
-      dest: "{{deployer.username}}/.ssh/id_rsa.pub"
+      dest: "{{deployer.home_dir}}/.ssh/id_rsa.pub"
       owner: "{{deployer.username}}"
       mode: 0400
 
