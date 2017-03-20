@@ -12,18 +12,18 @@
   action: lineinfile dest=/etc/sudoers regexp="{{deployer.username}} ALL" line="{{deployer.username}} ALL=(ALL) NOPASSWD:ALL" state=absent
 
 - name: Install ssh private key
-    copy: 
-      content: "{{deployer.ssh_private_key}}"
-      dest: "{{deployer.username}}/.ssh/id_rsa"
-      owner: "{{deployer.username}}"
-      mode: 0400
+  copy: 
+    content: "{{deployer.ssh_private_key}}"
+    dest: "{{deployer.username}}/.ssh/id_rsa"
+    owner: "{{deployer.username}}"
+    mode: 0400
 
 - name: Install ssh public key
-    copy: 
-      content: "{{deployer.ssh_public_key}}"
-      dest: "{{deployer.username}}/.ssh/id_rsa.pub"
-      owner: "{{deployer.username}}"
-      mode: 0400
+  copy: 
+    content: "{{deployer.ssh_public_key}}"
+    dest: "{{deployer.username}}/.ssh/id_rsa.pub"
+    owner: "{{deployer.username}}"
+    mode: 0400
 
 - name: Allow deploy to restart sidekiq workers
   action: lineinfile dest=/etc/sudoers regexp="{{deployer.username}} ALL" line="{{deployer.username}} ALL=(ALL) NOPASSWD:/bin/systemctl start sidekiq.service, /bin/systemctl stop sidekiq.service, /bin/systemctl status sidekiq.service, /bin/systemctl restart sidekiq.service, /bin/systemctl stop puma.service, /bin/systemctl start puma.service, /bin/systemctl restart puma.service, /bin/systemctl status puma.service, /bin/systemctl stop nginx.service, /bin/systemctl start nginx.service, /bin/systemctl restart nginx.service, /bin/systemctl status nginx.service" state=present
