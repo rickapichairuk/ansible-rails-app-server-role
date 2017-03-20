@@ -12,7 +12,7 @@
   action: lineinfile dest=/etc/sudoers regexp="{{deployer.username}} ALL" line="{{deployer.username}} ALL=(ALL) NOPASSWD:ALL" state=absent
 
 - name: Make sure deployer user .ssh dir exists
-    file: path={{deployer.home_dir}}/.ssh state=directory
+  file: path="{{deployer.home_dir}}/.ssh" state=directory
 
 - name: Install ssh private key
   copy: 
