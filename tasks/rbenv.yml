@@ -8,8 +8,9 @@
       env: user
       version: v1.1.0
       default_ruby: 2.3.3
-      rubies:
+      default_ruby_versions:
         - version: 2.3.3
+      rubies: {{ default_ruby_versions + additional_ruby_versions }}
     rbenv_root: "{% if rbenv.env == 'system' %}/usr/local/rbenv{% else %}{{deployer.home_dir}}/.rbenv{% endif %}"
     rbenv_users:
       - "{{ deployer.username }}"
