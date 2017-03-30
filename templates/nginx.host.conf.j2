@@ -47,8 +47,8 @@ server {
   location ~ ^/(assets)/  {
     root {{app_public_dir}};
     gzip_static on;
-    expires     max;
-    add_header  Cache-Control public;
+    expires     off;
+    add_header  Cache-Control "public, max-age=315360000";
 
     if ($http_origin ~* (https?://{{rails.default_host}})$) {
       set $cors "true";
