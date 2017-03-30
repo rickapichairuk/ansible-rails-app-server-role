@@ -1,2 +1,2 @@
-- name: copy vhost
+- name: install systemd puma.service file
   template: src=puma.service.j2 dest=/lib/systemd/system/puma.service owner=root group=root
