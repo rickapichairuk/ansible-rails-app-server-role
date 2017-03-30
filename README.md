@@ -43,6 +43,12 @@ the following:
     * install python-psycopg2
     * create database
     * create db user
+  * configure puma systemd service files
+    * start
+    * stop
+    * reload [phased-restart](https://github.com/puma/puma/blob/master/DEPLOYMENT.md#restarting)
+      * This requires that you have set `workers` to at least 2 in your rails config/puma.rb
+      * `state_path` also needs to be set in rails config/puma.rb
   * deploy shared rails configuration files to server
     * interpolate templates and put config files on server in shared directory
       where capistrano symlinks the files into each code deployment
