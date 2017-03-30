@@ -27,7 +27,7 @@ WorkingDirectory={{app_current_dir}}
 
 # Alternatively with a config file (in WorkingDirectory) and
 # comparable `bind` directives
-ExecStart={{deployer.home_dir}}/.rbenv/bin/rbenv exec bundle exec puma -C {{app_current_dir}}/config/puma.rb -s {{app_shared_dir}}/tmp/pids/puma.state -b unix://{{app_shared_dir}}/tmp/sockets/puma.sock
+ExecStart={{deployer.home_dir}}/.rbenv/bin/rbenv exec bundle exec puma -C {{app_current_dir}}/config/puma/production.rb -s {{app_shared_dir}}/tmp/pids/puma.state -b unix://{{app_shared_dir}}/tmp/sockets/puma.sock
 ExecReload=/home/deploy/.rbenv/bin/rbenv exec bundle exec pumactl -S {{app_shared_dir}}/tmp/pids/puma.state phased-restart
 ExecStop={{deployer.home_dir}}/.rbenv/bin/rbenv exec bundle exec pumactl -S {{app_shared_dir}}/tmp/pids/puma.state stop
 TimeoutSec=15
