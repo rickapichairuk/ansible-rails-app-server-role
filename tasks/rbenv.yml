@@ -4,13 +4,14 @@
     name: zzet.ansible-rbenv-role
   vars:
     rbenv_repo: "https://github.com/rbenv/rbenv.git"
+    default_ruby: 2.4.1
+    rbenv_default_ruby_versions:
+      - version: 2.4.1
+    rbenv_additional_ruby_versions: []
     rbenv:
       env: user
       version: v1.1.0
-      default_ruby: 2.3.3
-      default_ruby_versions:
-        - version: 2.3.3
-      rubies: {{ default_ruby_versions + additional_ruby_versions }}
+      rubies: "{{ rbenv_default_ruby_versions + rbenv_additional_ruby_versions }}"
     rbenv_root: "{% if rbenv.env == 'system' %}/usr/local/rbenv{% else %}{{deployer.home_dir}}/.rbenv{% endif %}"
     rbenv_users:
       - "{{ deployer.username }}"
