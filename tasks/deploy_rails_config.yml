@@ -12,6 +12,10 @@
       deploy: true
       template: "{{template_dir}}/secrets.yml.j2"
       dest: "{{app_shared_dir}}/config/secrets.yml"
+    secrets_yml_key:
+      deploy: true
+      template: "{{template_dir}}/secrets.yml.key.j2"
+      dest: "{{app_shared_dir}}/config/secrets.yml.key"
     application_yml:
       deploy: true
       template: "{{template_dir}}/application.yml.j2"
