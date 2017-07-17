@@ -31,7 +31,7 @@ server {
     proxy_pass http://puma;
   }
 
-  location ~ ^/(assets)/  {
+  location ~ ^/(assets|public)/  {
     root {{app_public_dir}};
     gzip_static on;
     expires     off;
