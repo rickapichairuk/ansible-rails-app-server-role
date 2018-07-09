@@ -7,7 +7,6 @@
       - nodejs
       - redis-server
       - redis-tools
-      - graphicsmagick-libmagick-dev-compat
       - imagemagick
       - libmagickcore-dev
       - libmagickwand-dev
