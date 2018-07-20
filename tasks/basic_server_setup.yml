@@ -7,9 +7,6 @@
       - nodejs
       - redis-server
       - redis-tools
-      - imagemagick
-      - libmagickcore-dev
-      - libmagickwand-dev
       - libpq-dev
     additional_packages_to_install:
       "{{ default_additional_packages_to_install + basic_server_setup.additional_packages_to_install }}"

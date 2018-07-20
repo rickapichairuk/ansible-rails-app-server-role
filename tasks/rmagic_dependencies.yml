@@ -1,0 +1,33 @@
+---
+- name: "purge imagemagick related packages"
+  apt:
+    name: 'purge {{ packages }}'
+    purge: yes
+  vars:
+    packages:
+      - graphicsmagick
+      - graphicsmagick-dbg
+      - imagemagick-common
+      - imagemagick
+      - imagemagick-6.q16
+      - libmagickcore-6-headers
+      - libmagickwand-dev
+      - graphicsmagick-libmagick-dev-compat
+
+- name: Remove dependencies that are no longer required
+  apt:
+    autoremove: yes
+
+- name: 'install imagemagick and libmagickwand-dev'
+  apt: name 'install {{ packages }}'
+    update_cache: yes
+  vars:
+    packages:
+      - imagemagick
+      - libmagickwand-dev
+
+- name: 'symlink Magick-config'
+  file:
+    src: /usr/lib/x86_64-linux-gnu/ImageMagick-6.8.9/bin-Q16/Magick-config
+    dest: /usr/bin/Magick-config
+    state: link
