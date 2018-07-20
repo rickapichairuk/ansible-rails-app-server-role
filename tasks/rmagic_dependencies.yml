@@ -19,7 +19,8 @@
     autoremove: yes
 
 - name: 'install imagemagick and libmagickwand-dev'
-  apt: name 'install {{ packages }}'
+  apt:
+    name: 'install {{ packages }}'
     update_cache: yes
   vars:
     packages:
