@@ -4,26 +4,29 @@
 # 4. add devops admin user account
 - include: basic_server_setup.yml
 
-# 5. create deployer user account
+# 5. install rmagick dependencies
+- include: rmagic_dependencies.yml
+
+# 6. create deployer user account
 - include: deployer.yml
 
-# 6. install ntp
-# 7. install nginx
+# 7. install ntp
+# 8. install nginx
 - include: ntp_nginx.yml
 
-# 8. configure nginx
+# 9. configure nginx
 - include: nginx_config.yml
 
-# 9. install systemd files for puma and sidekiq
+# 10. install systemd files for puma and sidekiq
 - include: puma_service.yml
 - include: sidekiq_service.yml
 
-# 10. install rbenv & install bundler gem
+# 11. install rbenv & install bundler gem
 - include: rbenv.yml
 
-# 11. install postgresql
+# 12. install postgresql
 - include: postgresql.yml
 
-# 12. make shared directory for capistrano
-# 13. deploy rails config files into shared directory
+# 13. make shared directory for capistrano
+# 14. deploy rails config files into shared directory
 - include: deploy_rails_config.yml
