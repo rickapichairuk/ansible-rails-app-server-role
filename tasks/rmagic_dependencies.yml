@@ -1,8 +1,9 @@
 ---
 - name: "purge imagemagick related packages"
   apt:
-    name: 'purge {{ packages }}'
+    state: absent
     purge: yes
+    force: yes
   vars:
     packages:
       - graphicsmagick
@@ -20,7 +21,6 @@
 
 - name: 'install imagemagick and libmagickwand-dev'
   apt:
-    name: 'install {{ packages }}'
     update_cache: yes
   vars:
     packages:
