@@ -36,3 +36,7 @@
       deploy: true
       template: "{{template_dir}}/newrelic.yml.j2"
       dest: "{{app_shared_dir}}/config/newrelic.yml"
+    logrotate_conf:
+      deploy: true
+      template: "{{template_dir}}/logrotate.conf.j2"
+      dest: "/etc/logrotate.conf"
