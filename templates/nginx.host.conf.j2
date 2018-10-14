@@ -2,11 +2,36 @@ upstream puma {
   server unix:{{app_shared_dir}}/tmp/sockets/puma.sock fail_timeout=0;
 }
 
+# Expires map
+map $sent_http_content_type $expires {
+    default                    off;
+    text/html                  epoch;
+    text/css                   max;
+    application/javascript     max;
+    ~image/                    max;
+}
+
+server {
+    listen 80;
+    server_name company.snpfood.com;
+
+    location / {
+        proxy_pass  http://203.154.221.217;
+    }
+}
+
+server {
+    server_name www.snpfood.com;
+    return 301 $scheme://snpfood.com$request_uri;
+}
+
 server {
   listen 80 default deferred;
+  listen [::]:80 default deferred;
+  server_name {{rails.default_host}}
 
-  if ($http_x_forwarded_proto = "http") {
-    rewrite ^(.*)$ https://{{rails.default_host}}$1 permanent;
+  if ($http_x_forwarded_proto = 'http') {
+    return 301 https://$host$request_uri;
   }
 
   add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
@@ -34,13 +59,13 @@ server {
     proxy_pass http://puma;
   }
 
-  location ~ ^/(assets|uploads)/  {
+  location ~ ^/(assets)/  {
     root {{app_public_dir}};
     gzip_static on;
     expires     off;
     add_header  Cache-Control "public, max-age=315360000";
 
-    if ($http_origin ~* (https?://{{rails.default_host}})$) {
+    if ($http_origin ~ '^https?://(snpfoodprod\.sennalabs\.com|app\.snpfood\.com|snpfood\.com|www\.snpfood\.com|company\.snpfood\.com)$') {
       set $cors "true";
     }
 
