@@ -28,7 +28,7 @@ server {
 server {
   listen 80 default deferred;
   listen [::]:80 default deferred;
-  server_name {{rails.default_host}}
+  server_name {{rails.default_host}};
 
   if ($http_x_forwarded_proto = 'http') {
     return 301 https://$host$request_uri;
