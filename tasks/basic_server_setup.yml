@@ -4,7 +4,6 @@
     name: rickapichairuk.basic-server-setup
   vars:
     default_additional_packages_to_install:
-      - nodejs
       - redis-server
       - redis-tools
       - libpq-dev
